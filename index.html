@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Clock Tower Bell Counter</title>
+    </head>
+    <body>
+        <h1 style="text-align: center; ">Clock Tower Bell Counter</h1>
+        <div style="width: 100%; margin-bottom: 15px;"> 
+            <label style="font-size: 18px;">Start Time</label>
+            <input style="width: 20%; margin-left: 20px; height: 25px; border: 1px solid black; padding-left: 5px;" id='start' />
+        </div>
+        <div style="width: 100%; margin-bottom: 15px;">
+            <label style="font-size: 18px;">End Time</label>
+            <input style="width: 20%; margin-left: 25px; height: 25px; border: 1px solid black; padding-left: 5px;" id='end' />
+        </div>
+        <button style="margin-bottom: 15px; border: 1px solid black; background: transparent; width: 100px; height: 30px;" onclick="bellCounter()">Calculate</button>
+        <div style="width: 100%; margin-bottom: 15px;">
+            <label style="font-size: 18px;">Output</label>
+            <p style="font-size: 18px;" id='output'></p>
+        </div>
+
+        <script>
+            function compute(startHours, startMinutes, bell, i) {
+                if(startMinutes == 0 && bell == 0) {
+                    if (i > 12) {
+                        bell = i - 12;
+                    } else {
+                        bell = i;
+                        if (i == 0) {
+                            bell = 12
+                        }
+                    }
+                }
+                if(startMinutes > 0 && bell == 0 && i == startHours) {
+                    bell = 0;
+                }
+                if(i != startHours) {
+                    if(i > 12) {
+                        bell += (i - 12);
+                    } else {
+                        bell += i;
+                    }
+                }
+
+                return bell;
+            }
+
+            function clock(start, end) {
+                const [startHours, startMinutes] = start.split(':').map(Number);
+	            const [endHours, endMinutes] = end.split(':').map(Number);
+                let bell = 0;
+
+                if (startHours < 0 || startHours > 23 || endHours < 0 || endHours > 24 || isNaN(endHours) || isNaN(startHours)) {
+                    document.getElementById('output').innerHTML = 'Wrong input';
+                    return;
+                }
+
+                if(endHours - startHours < 0)
+                {
+                    for (let i = startHours; i <= 24; i++){
+                        bell = compute(startHours, startMinutes, bell, i);
+                    }
+                    for (let i = 0; i <= endHours; i++){
+                        bell = compute(0, startMinutes, bell, i);
+                    }
+                } else {
+                    for (let i = startHours; i <= endHours; i++){
+                        bell = compute(startHours, startMinutes, bell, i);
+                    }
+                }
+
+                document.getElementById('output').innerHTML = bell;
+            }
+
+            function bellCounter() {
+                let startTime = document.getElementById('start').value;
+                let endTime = document.getElementById('end').value;
+
+                clock (startTime, endTime);
+            }
+        </script>
+    </body>
+</html>
